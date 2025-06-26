@@ -33,7 +33,7 @@ export default function RootLayout({
             {children}
           </main>
           <footer className="text-xs text-gray-400 mt-4 mb-2">
-            © 2025 Japanese Learning App
+            © 2025 Tyler W. Japanese Learning Tools
           </footer>
         </div>
       </body>

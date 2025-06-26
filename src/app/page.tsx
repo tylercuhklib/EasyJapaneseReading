@@ -60,7 +60,12 @@ export default function Home() {
           }
         }
         if (dataArr && dataArr.length > 0) {
-          meaning = dataArr[0].senses[0].english_definitions.join(", ");
+          // Collect all possible meanings from all senses
+          const allMeanings: string[] = [];
+          dataArr[0].senses.forEach((sense: { english_definitions: string[] }) => {
+            allMeanings.push(...sense.english_definitions);
+          });
+          meaning = allMeanings.join(", ");
         }
       } catch {
         // ignore
@@ -159,7 +164,7 @@ export default function Home() {
   return (
     <div className="w-full" ref={containerRef}>
       <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">
-        Japanese Learning Tools - Easy Reading with Furigana
+        Easy Japanese Reading
       </h1>
       <textarea
         className="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:outline-blue-400 bg-white/80"
