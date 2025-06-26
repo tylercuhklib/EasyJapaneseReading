@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.setHeader('Access-Control-Allow-Origin', '*');
     const arrayBuffer = await response.arrayBuffer();
     res.send(Buffer.from(arrayBuffer));
-  } catch (e) {
+  } catch {
     res.status(500).json({ error: 'Proxy error' });
   }
 }

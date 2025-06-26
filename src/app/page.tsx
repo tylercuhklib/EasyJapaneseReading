@@ -12,8 +12,8 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [translation, setTranslation] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [flashcards, setFlashcards] = useState<any[]>([]);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [flashcards, setFlashcards] = useState<Array<{ word: string; reading: string; meaning: string }>>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -62,7 +62,9 @@ export default function Home() {
         if (dataArr && dataArr.length > 0) {
           meaning = dataArr[0].senses[0].english_definitions.join(", ");
         }
-      } catch {}
+      } catch {
+        // ignore
+      }
       return {
         word,
         reading: token?.reading ? wanakana.toHiragana(token.reading) : word,
@@ -99,21 +101,20 @@ export default function Home() {
       let found = null;
       if (dataArr && dataArr.length > 0) {
         found = dataArr.find(
-          (item: any) =>
+          (item: { slug: string; japanese: Array<{ word: string; reading: string }>; senses: Array<{ english_definitions: string[] }> }) =>
             item.slug === word ||
-            (item.japanese && item.japanese.some((j: any) => j.word === word || j.reading === word))
+            (item.japanese && item.japanese.some((j) => j.word === word || j.reading === word))
         );
         if (!found) found = dataArr[0];
         setTranslation(found.senses[0].english_definitions.join(", "));
         // Audio pronunciation using Google TTS via backend proxy
         const reading = found.japanese[0]?.reading || word;
-        // console.log('Audio play:', reading);
         const ttsUrl = `/api/tts?text=${encodeURIComponent(reading)}`;
         setAudioUrl(ttsUrl);
       } else {
         setTranslation("No translation found.");
       }
-    } catch (e) {
+    } catch {
       setTranslation("No translation found.");
     }
   };
@@ -128,7 +129,6 @@ export default function Home() {
         result.push(remaining);
         break;
       }
-      let idx = -1;
       let lastMatch = 0;
       re.lastIndex = 0;
       let match: RegExpExecArray | null;
@@ -192,13 +192,13 @@ export default function Home() {
                 try {
                   const audio = new window.Audio(ttsUrl);
                   audioRef.current = audio;
-                  await new Promise<void>((resolve, reject) => {
+                  await new Promise<void>((resolve) => {
                     audio.onended = () => resolve();
                     audio.onpause = () => resolve();
                     audio.onerror = () => resolve();
                     audio.play();
                   });
-                } catch (err) {
+                } catch {
                   // skip to next chunk
                 }
                 if (!playbackController.current.playing) break;
@@ -259,7 +259,7 @@ export default function Home() {
               try {
                 const audio = new window.Audio(ttsUrl);
                 audio.play();
-              } catch (err) {
+              } catch {
                 alert('Failed to play audio.');
               }
             }
