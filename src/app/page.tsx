@@ -106,7 +106,15 @@ export default function Home() {
             (item.japanese && item.japanese.some((j) => j.word === word || j.reading === word))
         );
         if (!found) found = dataArr[0];
-        setTranslation(found.senses[0].english_definitions.join(", "));
+        // Collect all possible meanings from all senses
+        const allMeanings: string[] = [];
+        found.senses.forEach((sense: { english_definitions: string[] }) => {
+          allMeanings.push(...sense.english_definitions);
+        });
+        // Show the Japanese word (kanji/kana) if available
+        const jpWords = found.japanese?.map((j: { word?: string; reading?: string }) => j.word || j.reading).filter(Boolean) || [];
+        const jpWordsStr = jpWords.length > 0 ? `【${jpWords.join('・')}】` : '';
+        setTranslation((jpWordsStr ? jpWordsStr + ' ' : '') + (allMeanings.length > 0 ? allMeanings.join(", ") : "No translation found."));
         // Audio pronunciation using Google TTS via backend proxy
         const reading = found.japanese[0]?.reading || word;
         const ttsUrl = `/api/tts?text=${encodeURIComponent(reading)}`;
