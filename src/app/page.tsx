@@ -151,7 +151,7 @@ export default function Home() {
   return (
     <div className="w-full" ref={containerRef}>
       <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">
-        My Japanese Learning Tools
+        Japanese Learning Tools - Easy Reading with Furigana
       </h1>
       <textarea
         className="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:outline-blue-400 bg-white/80"
